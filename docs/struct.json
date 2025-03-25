@@ -1,0 +1,12 @@
+{
+    "util.py": "onx",
+    "res10_300x300_ssd_iter_140000.caffemodel": "config file",
+    "deploy.prototxt.txt": "model file",
+    "handle_cheat.py": "File xử lý gian lận",
+    ".gitignore": "Git Ignore File",
+    "db.sqlite3": "DB Local Test",
+    "Procfile": "Gunicorn running command",
+    "README.md": "File mô tả của project",
+    "requirements.txt": "package dependencies file",
+    "runtime.txt": "config python version file"
+}

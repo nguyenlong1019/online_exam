@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Đăng nhập {% endblock title %}
+
+{% block content %}
+
+<div class="wrapper-log-reg d-flex align-items-center justify-content-center" style="height: 100vh;">
+    <div class="log-reg-section d-flex align-items-center justify-content-center flex-column" style="gap: 24px;border-radius: 6px;box-shadow: 0 10px 15px 6px rgba(0, 0, 0, 0.1);border: none;">
+        <h2>Đăng nhập</h2>
+        
+        <form action="{% url 'login' %}" method="POST">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label for="exampleInputEmail1" class="form-label">Tên tài khoản</label>
+              <input type="text" name="username" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>
+            </div>
+            <div class="mb-3">
+              <label for="exampleInputPassword1" class="form-label">Password</label>
+              <input type="password" name="password" class="form-control" id="exampleInputPassword1" required>
+            </div>
+            <div class="mb-3 form-check">
+              <input type="checkbox" class="form-check-input" id="exampleCheck1">
+              <label class="form-check-label" for="exampleCheck1">Nhớ tài khoản</label>
+            </div>
+            <button type="submit" class="btn btn-primary">Đăng nhập</button>
+        </form>
+    
+        {% if messages %}
+        <ul>
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    
+        
+    </div>
+</div>
+
+<style>
+  body {
+    background-color: #fff;
+  }
+</style>
+
+
+{% endblock content %}

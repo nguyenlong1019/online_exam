@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Record: {{exam.title}} {% endblock title %}
+
+{% block content %}
+    <div class="container py-4">
+        <h2 class="text-center fw-bold mb-4" style="color: #4A4A4A;">Record: {{ exam.title }}</h2>
+        <div class="text-center mt-4 mb-3">
+            <a href="{% url 'monitor' %}" class="btn-custom">Về trang giám sát</a>
+        </div>
+        <div class="row g-4">
+            {% for m in monitors %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body text-center">
+                        <video class="mb-3 rounded" style="width: 100%; height: auto; max-height: 250px;" 
+                               src="{{ m.video.url }}" controls autoplay muted></video>
+                        <h5 class="card-title">{{ m.user.username }}</h5>
+                        <p class="card-text">
+                            Trạng thái gian lận: 
+                            <span class="fw-bold text-white">
+                                {% if m.is_cheat %} Có {% else %} Không {% endif %}
+                            </span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <style>
+        body {
+            height: 100vh;
+            background: linear-gradient(135deg, #E0F7FA, #E1BEE7);
+            color: #333;
+        }
+
+        .card {
+            border-radius: 10px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background: linear-gradient(135deg, #FFEB3B, #FF5722);
+            color: white;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        .card-text {
+            font-size: 16px;
+            margin-bottom: 0;
+            color: #ffffff;
+        }
+
+        .text-success {
+            color: #66BB6A !important;
+        }
+
+        .text-danger {
+            color: #E57373 !important;
+        }
+
+        /* Style for the link */
+        .btn-custom {
+            display: inline-block;
+            font-size: 16px;
+            padding: 10px 20px;
+            color: #fff;
+            background: linear-gradient(135deg, #42A5F5, #1E88E5);
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .btn-custom:hover {
+            background-color: #1565C0;
+            transform: translateY(-2px);
+            text-decoration: none;
+        }
+    </style>
+{% endblock content %}

@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Giám sát{% endblock title %}
+
+{% block content %}
+    <div class="container p-4">
+        <h2 class="text-center" style="color: #4A4A4A; font-size: 28px; font-weight: bold; margin-bottom: 24px;">
+            Trang giám sát video các bài thi
+        </h2>
+        <div class="text-center mt-4 mb-3">
+            <a href="{% url 'index' %}" class="btn-custom">Trang chủ</a>
+        </div>
+        <div class="row">
+            {% for exam in exams %}
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card shadow-sm border-0 h-100">
+                        <div class="card-body">
+                            <h5 class="card-title text-dark fw-bold">{{ exam.title }}</h5>
+                            <a class="nav-link view-link" href="{% url 'monitor-detail' exam.id %}">
+                                <i class="bi bi-camera-video-fill"></i> Xem giám sát
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <style>
+        body {
+            /* background-color: #f0f2f5; */
+            background: linear-gradient(135deg, #a2d9ff, #d6ecff);
+        }
+
+        .card {
+            border-radius: 10px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background: linear-gradient(135deg, #FDC830, #F37335);
+            color: white;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-title {
+            margin-bottom: 12px;
+            color: #ffffff;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .nav-link.view-link {
+            font-size: 16px;
+            padding-left: 16px;
+            font-weight: 500;
+            /* color: #FFC107; */
+            color: white;
+            transition: color 0.3s ease, transform 0.3s ease;
+            text-decoration: none;
+        }
+
+        .nav-link.view-link:hover {
+            /* color: #FF8C00; */
+            color: #fff;
+            transform: scale(1.1);
+            text-decoration: underline;
+        }
+
+        .btn-custom {
+            display: inline-block;
+            font-size: 16px;
+            padding: 10px 20px;
+            color: #fff;
+            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .btn-custom:hover {
+            background-color: #2E7D32;
+            transform: translateY(-2px);
+            text-decoration: none;
+        }
+    </style>
+{% endblock content %}

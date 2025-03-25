@@ -1,0 +1,95 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Open Sans", serif;
+}
+
+.log-reg-section {
+    flex: 1;
+    padding: 36px 40px;
+    max-width: 470px;
+    margin: 0 auto;
+    border: 1px solid #ddd;
+}
+
+.log-reg-section form, p {
+    width: 100%;
+}
+
+.slider {
+    display: flex;
+    /* overflow: hidden; */
+    overflow-y: scroll;
+    width: 100%;
+    /* border: 1px solid #ccc; */
+    border: none;
+    border-radius: 6px;
+    margin: 20px 0;
+    position: relative;
+    height: 60vh;
+}
+
+.slide {
+    padding: 24px;
+    display: none;
+    width: 100%;
+    height: 100%;
+    background-color: #f4f4f4;
+}
+
+.slide.active {
+    display: block;
+}
+
+.controls button {
+    padding: 10px 20px;
+    font-size: 16px;
+    margin: 0 10px;
+    cursor: pointer;
+}
+
+/* video {
+    position: absolute;
+    top: 50px;
+    right: 100px;
+    width: 200px;
+    height: 200px;
+} */
+
+ul {
+    list-style: none;
+}
+
+
+/* Responsive styles for smaller screens */
+@media (max-width: 768px) {
+    .slider {
+        height: 60vh; /* Increase height for smaller screens */
+    }
+
+    .slide {
+        padding: 16px; /* Reduce padding */
+    }
+
+    .controls button {
+        padding: 8px 16px; /* Smaller buttons */
+        font-size: 14px; /* Smaller font size */
+        margin: 5px; /* Less margin between buttons */
+    }
+}
+
+@media (max-width: 576px) {
+    .slider {
+        height: auto; /* Further increase height for very small screens */
+    }
+
+    .slide {
+        padding: 12px; /* Further reduce padding */
+    }
+
+    .controls button {
+        padding: 6px 12px; /* Even smaller buttons */
+        font-size: 12px; /* Even smaller font size */
+    }
+}

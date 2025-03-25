@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Trang chủ {% endblock title %}
+
+{% block content %}
+
+<nav class="navbar navbar-expand-lg bg-dark border-bottom border-body" data-bs-theme="dark">
+    <div class="container">
+      <!-- <a class="navbar-brand" href="/">Cuongcon</a> -->
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/">Trang chủ</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Giới thiệu</a>
+          </li>
+          {% if request.user.is_superuser %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'monitor' %}">Giám sát</a>
+          </li>
+          {% endif %}
+        </ul>
+        {% if request.user.is_authenticated %}
+          <span class="text-white" style="margin-right: 8px;">{{request.user.username}}</span>
+          <a href="{% url 'logout' %}" class="btn btn-outline-success">Đăng xuất</a>
+        {% else %}
+          <a class="btn btn-outline-success" href="{% url 'login' %}">Đăng nhập</a>
+        {% endif %}
+      </div>
+    </div>
+</nav>
+
+<div class="container p-3">
+  <div class="row">
+    {% for exam in exams %}
+      <div class="col-12 col-sm-6 col-lg-4 mb-3">
+        <a class="card nav-link h-100" href="{% url 'exam' exam.id %}">
+          <div class="row g-0">
+            <div class="col-4">
+              <img src="{% static 'assets/images/laboratory.png' %}" class="img-fluid rounded-start" alt="{{exam.title}}">
+            </div>
+            <div class="col-8">
+              <div class="card-body">
+                <h5 style="color: #0D92F4;" class="card-title">{{exam.title}}</h5>
+                <p class="card-text">{{exam.title}} (có đáp án)</p>
+                <p class="card-text" style="color: #F95454;">Thời gian thi: {{exam.time_todo}} phút</p>
+                <p class="card-text">Số lượt thi: {{exam.retry}}</p>
+                <p class="card-text">Người tạo: {{exam.created_by}}</p>
+                <p class="card-text"><small class="text-body-secondary">Ngày tạo: {{exam.created_at|date:"d/m/Y"}}</small></p>
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+<style>
+  body {
+    height: 100vh;
+    background-image: linear-gradient(135deg, #0d6efd, #ffffff);
+  }
+
+  .card {
+    border: 3px solid #B9E5E8;
+    border-radius: 10px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  }
+
+  .card-title {
+    color: #2C3E50; /* Màu xanh đậm cho tiêu đề */
+    font-weight: bold;
+  }
+
+  .card-text {
+    color: #34495E; /* Màu xám đậm cho nội dung */
+  }
+
+  .card-text small {
+    color: #7F8C8D; /* Màu xám nhạt cho các thông tin bổ sung */
+  }
+
+  .text-white {
+    color: #ECF0F1; /* Màu trắng cho tên người dùng */
+  }
+
+  .btn-outline-success {
+    color: #28A745; /* Màu xanh lá cây cho nút Đăng nhập/Đăng xuất */
+    border-color: #28A745;
+  }
+
+  .card img {
+    border-radius: 15px 0 0 15px; /* Làm tròn góc hình ảnh bên trái */
+    transition: transform 0.3s ease;
+  }
+
+
+  .card:hover img {
+      transform: scale(1.05); /* Phóng to nhẹ khi hover */
+  }
+
+  @media (max-width: 576px) {
+    .card {
+      border-width: 2px;
+      font-size: 14px;
+    }
+  }
+
+</style>
+
+{% endblock content %}

@@ -1,0 +1,272 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} {{exam.title}} {% endblock title %}
+
+{% block content %}
+
+<div class="container p-3" style="background-color: #0D92F4;height: 100vh;">
+    <div class="">
+        <input type="hidden" name="exam_id" id="exam_id" value="{{exam.id}}">
+        <h2 style="color: #0D92F4;font-size: 28px;box-shadow: 0 10px 15px 6px rgba(0, 0, 0, 0.1);background-color: #54da5f;padding: 12px 24px;border-radius: 4px;"><span><i style="font-size: 20px;color: #fff;margin-right: 12px;" class="fa-solid fa-list-check"></i></span> {{ exam.title }}</h2>
+        <p>Số lượng câu hỏi: {{counter}} <span><i style="font-size: 20px;color: #0e4f7e;margin-left: 12px;" class="fa-regular fa-circle-question"></i></span></p>
+        <p style="display: flex;align-items: center;justify-content: space-between;"><span style="color: #222;font-weight: 700;font-size: 18px;">Player: {{request.user.username}}</span></p>
+        <p style="display: flex;align-items: center;justify-content: space-between;"><span id="countdown" style="display: block;font-size: 18px;font-weight: 700;color: #C62E2E;">15:00</span></p>
+        <form method="post" action="{% url 'exam' exam.id %}">
+            {% csrf_token %}
+            <div class="slider">
+                {% for question in exam.question_set.all %}
+                    <div class="slide">
+                        <h3 style="font-size: 20px;margin-top: 12px;color: #0D92F4;" class="mb-3">Phần I. Câu hỏi trắc nghiệm (4 đáp án)</h3>
+
+                        <p style="color: #FF6B6B; font-size: 18px; font-weight: bold; background-color: #FFF3E0; padding: 12px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                            <span><i style="color: #0D92F4;font-size: 20px;margin-right: 12px;" class="fa-regular fa-circle-question"></i></span> Câu hỏi: {{ question.question_text|safe }}
+                        </p>
+                        
+
+                        <input type="hidden" name="question_{{ question.id }}" value="">
+                        {% for answer in question.answer_set.all %}
+                            <div class="form-check mb-3" style="box-shadow: 0 10px 15px 6px rgba(0, 0, 0, 0.1);padding: 12px 12px 12px 40px;border-radius: 4px;cursor: pointer;background-color: #fff;">
+                                <input class="form-check-input" type="radio" name="question_{{ question.id }}" value="{{ answer.id }}">
+                                <label class="form-check-label">
+                                    {{ answer.answer_text|safe }}
+                                </label>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+
+                
+                {% for question in exam.questiontruefalse_set.all %}
+                    <div class="slide">
+                        <!-- Phần câu hỏi đúng sai -->
+                        <h3 style="color: #0D92F4;font-size: 20px;margin-top: 12px;" class="mb-3">Phần II. Câu hỏi đúng sai</h3>
+                        <p style="color: #FF6B6B; font-size: 18px; font-weight: bold; background-color: #FFF3E0; padding: 12px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                            <span><i style="color: #0D92F4;font-size: 20px;margin-right: 12px;" class="fa-regular fa-circle-question"></i></span> Câu hỏi: {{ question.question_text }}
+                        </p>
+                        {% for answer in question.answertruefalse_set.all %}
+                        <div class="form-check mb-3 d-flex align-items-center justify-content-between" style="gap: 24px;box-shadow: 0 10px 15px 6px rgba(0, 0, 0, 0.1);padding: 12px 12px 12px 40px;border-radius: 4px;cursor: pointer;background-color: #fff;">
+                            <label class="form-check-label me-3" style="flex: 1;">{{ answer.clause|safe }}</label>
+                            <div style="width: max-content;gap: 24px;" class="d-flex align-items-center justify-content-between">
+                                <div>
+                                    <input class="form-check-input me-2" type="radio" name="question_tf_{{ question.id }}_{{ answer.id }}" value="true">
+                                    <label class="form-check-label me-3">Đúng</label>
+                                </div>
+                                <div>
+                                    <input class="form-check-input me-2" type="radio" name="question_tf_{{ question.id }}_{{ answer.id }}" value="false">
+                                    <label class="form-check-label">Sai</label>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+
+                <!-- Câu hỏi điền đáp án -->
+                {% for question in exam.questionfill_set.all %}
+                    <div class="slide">
+                        <h3 style="color: #0D92F4;font-size: 20px;margin-top: 12px;" class="mb-3">Phần III. Câu hỏi điền đáp án</h3>
+                        
+                        <p style="color: #FF6B6B; font-size: 18px; font-weight: bold; background-color: #FFF3E0; padding: 12px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                            <span><i style="color: #0D92F4;font-size: 20px;margin-right: 12px;" class="fa-regular fa-circle-question"></i></span> Câu hỏi: {{ question.question_text|safe }}
+                        </p>
+                        
+
+                        <input type="hidden" name="question_fill_{{ question.id }}" value="">
+                        <div class="mb-3">
+                            <label class="form-label" style="color: #0D92F4;">Điền vào đáp án</label>
+                            <input class="form-control" type="text" name="question_fill_{{ question.id }}">
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            
+            <div class="controls">
+                <button type="button" class="btn btn-dark" onclick="prevSlide()">
+                    <span><i style="font-size: 20px;margin-right: 12px;" class="fa-solid fa-caret-left"></i></span>
+                    Prev
+                </button>
+                <button type="button" class="btn btn-primary" onclick="nextSlide()">
+                    Next
+                    <span><i style="font-size: 20px;margin-left: 12px;" class="fa-solid fa-caret-right"></i></span>
+                </button>
+                <button class="btn btn-success" type="submit"><span><i style="font-size: 20px;margin-right: 12px;" class="fa-solid fa-paper-plane"></i></span> Nộp bài</button>
+                <button type="button" onclick="window.location.href = '/'" class="btn btn-dark"><span><i style="font-size: 20px;margin-right: 12px;" class="fa-solid fa-house"></i></span> Trang chủ</button>
+            </div>
+        </form>
+    </div>
+    
+    <!-- <video style="position: absolute; top: 50px;right: 100px;width: 200px;height: 200px;" id="videoElement" autoplay muted></video> -->
+
+    <!-- Camera video -->
+    <div style="position: fixed; top: 20px; right: 20px; width: 150px; height: 150px; border: 3px solid #0D92F4; border-radius: 10px; overflow: hidden;">
+        <video id="videoElement" autoplay muted style="width: 100%; height: 100%; object-fit: cover;"></video>
+    </div>
+
+    <div class="moving-object"></div>
+
+    <style>
+    /* Định dạng ban đầu của phần tử hoạt hình */
+    .moving-object {
+        position: absolute;
+        top: 10px; /* Đặt vị trí gần đáy hoặc điều chỉnh theo ý muốn */
+        left: 20px;
+        width: 100px;
+        height: 100px;
+        background: url("{% static 'assets/images/animal.avif' %}") no-repeat center/contain; /* Đổi 'animal.png' thành hình ảnh con vật bạn muốn */
+        animation: moveAnimal 10s linear infinite;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    /* Hoạt ảnh di chuyển */
+    @keyframes moveAnimal {
+        0% {
+        transform: translateY(0);
+        }
+        50% {
+        transform: translateY(calc(100vh - 200px)); /* Di chuyển từ trái sang phải, trừ đi chiều rộng của hình để giữ trong màn hình */
+        }
+        100% {
+        transform: translateY(0);
+        }
+    }
+
+    @media (max-width: 992px) {
+        .moving-object {
+            display: none;
+        }
+    }
+
+
+    </style>
+
+    
+      
+
+    <script>
+        // Countdown timer (15 minutes)
+        let timeLeft = 15 * 60; // 15 minutes in seconds
+        const countdownElement = document.getElementById("countdown");
+
+        const timerInterval = setInterval(() => {
+            let minutes = Math.floor(timeLeft / 60);
+            let seconds = timeLeft % 60;
+            seconds = seconds < 10 ? '0' + seconds : seconds;
+            countdownElement.innerHTML = `${minutes}:${seconds}`;
+
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                document.getElementById("examForm").submit(); // Auto-submit the form when time runs out
+            }
+            timeLeft -= 1;
+        }, 1000);
+    
+        
+        let mediaRecorder;
+        let recordedChunks = [];
+
+        async function startVideoRecording() {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            const videoElement = document.getElementById('videoElement');
+            videoElement.srcObject = stream;
+
+            mediaRecorder = new MediaRecorder(stream, {
+                mimeType: 'video/webm;codecs=vp9',
+            });
+
+            // Khi có dữ liệu video mới, thêm vào mảng `recordedChunks`
+            mediaRecorder.ondataavailable = function(event) {
+                console.log(event.data.size);
+                
+                if (event.data.size > 0) {
+                    recordedChunks.push(event.data);
+                }
+            };
+
+            // Đặt sự kiện `onstop` để gửi video sau khi ghi xong
+            mediaRecorder.onstop = async function() {
+                const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                const formData = new FormData();
+                formData.append('video_recording', blob, 'recorded_video.webm');
+
+                const examId = document.getElementById('exam_id').value;
+
+                await fetch(`/monitoring/upload_video/${examId}`, {
+                    method: 'POST',
+                    body: formData,
+                }).then(response => {
+                    if (response.ok) {
+                        console.log("Video uploaded successfully");
+                    } else {
+                        console.error("Failed to upload video");
+                    }
+                });
+            };
+
+            mediaRecorder.start(); // Bắt đầu ghi
+        }
+
+        // Khi submit form thì gọi `mediaRecorder.stop()` và chờ `onstop` xử lý tải lên
+        document.querySelector("form").onsubmit = async function(event) {
+            event.preventDefault(); // Ngăn form submit mặc định
+            mediaRecorder.stop(); // Kết thúc ghi, onstop sẽ xử lý tải lên
+            setTimeout(() => {
+                this.submit(); // Submit form sau khi tải lên hoàn tất
+            }, 1000); // Đặt độ trễ để đảm bảo việc tải lên hoàn tất
+        };
+
+        startVideoRecording(); // Bắt đầu ghi khi tải trang
+
+
+
+
+    </script>
+
+    <style>
+        body {
+            /* background: linear-gradient(135deg, #E0F7FA, #FFEBEE); */
+            background-image: url("{% static 'assets/images/quiz_background.jpg' %}");
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            position: relative;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            h2 {
+                font-size: 24px;
+            }
+            #videoElement {
+                width: 120px;
+                height: 120px;
+                top: 10px;
+                right: 10px;
+            }
+            #countdown {
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .container {
+                padding: 0.5rem;
+            }
+            h2 {
+                font-size: 18px;
+            }
+            .form-check-label {
+                font-size: 10px;
+            }
+            .controls button {
+                font-size: 10px;
+            }
+        }
+    </style>
+
+</div>
+
+{% endblock content %}
