@@ -65,7 +65,7 @@ def exam_view(request, pk):
                     is_correct=selected_answer == q.correct,
                 )
                 if selected_answer == q.correct:
-                    score += 10 
+                    score += 1
             else:
                 ResultDetail.objects.create(
                     result=result,
@@ -104,13 +104,13 @@ def exam_view(request, pk):
                         clause=a.clause,
                     )
             if count_temp == 1:
-                score += 1
+                score += 0.1
             elif count_temp == 2:
-                score += 2.5 
+                score += 0.25
             elif count_temp == 3:
-                score += 5 
+                score += 0.5
             elif count_temp == 4: 
-                score += 10
+                score += 1
 
         
         # Xử lý câu hỏi điền đáp án
@@ -125,7 +125,7 @@ def exam_view(request, pk):
                 is_correct=is_correct
             )
             if is_correct:
-                score += 10  # Điểm cho câu hỏi điền đáp án đúng
+                score += 1  # Điểm cho câu hỏi điền đáp án đúng
 
 
         result.score = score 
