@@ -23,7 +23,7 @@
             <a class="nav-link" href="{% url 'result-list' %}">Kết quả thi</a>
           </li>
           {% endif %}
-          {% if request.user.has_perm('change_teacherprofile') %}
+          {% if request.user.has_perm "change_teacherprofile" %}
           <li class="nav-item">
             <a class="nav-link" href="{% url 'monitor' %}">Giám sát</a>
           </li>
