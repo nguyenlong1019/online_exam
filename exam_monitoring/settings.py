@@ -11,7 +11,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
-import os
+import os 
+from decouple import config 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -28,13 +29,20 @@ DEBUG = True
 
 # ALLOWED_HOSTS = []
 
-ALLOWED_HOSTS = ['thitructuyenai.online', 'exammonitoring-production.up.railway.app', '127.0.0.1', 'web-production-f474.up.railway.app']
+ALLOWED_HOSTS = ['thitructuyenai.online', '127.0.0.1',]
 
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-CSRF_TRUSTED_ORIGINS = ['https://thitructuyenai.online/', 'https://exammonitoring-production.up.railway.app', 'http://127.0.0.1:8000', 'https://web-production-f474.up.railway.app']
+CSRF_TRUSTED_ORIGINS = ['https://thitructuyenai.online/', 'http://127.0.0.1:8000',]
+
+ALLOWED_APP = config('ALLOWED_APP')
+ALLOWED_HOST = config('ALLOWED_HOST')
+if ALLOWED_APP:
+    ALLOWED_HOSTS += str(ALLOWED_APP).split(',')
+if ALLOWED_HOST:
+    CSRF_TRUSTED_ORIGINS += str(ALLOWED_HOST).split(',')
 
 # Cors settings 
 CORS_ALLOW_ALL_ORIGINS = True 
@@ -88,25 +96,30 @@ WSGI_APPLICATION = 'exam_monitoring.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+APP_MODE = config('APP_MODE')
+DB_HOST = config('DB_HOST')
+DB_PORT = config('DB_PORT')
+DB_NAME = config('DB_NAME')
+DB_USER = config('DB_USER')
+DB_PASSWORD = config('DB_PASSWORD')
+if APP_MODE == 'development':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
-
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'HOST': 'caboose.proxy.rlwy.net',
-#         'PORT': '35660',
-#         'NAME': 'railway',
-#         'USER': 'postgres',
-#         'PASSWORD': 'TOBTCKDeSjizIrarhlNPNrVmkkulDTsD',
-#     }
-# }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'HOST': DB_HOST,
+            'PORT': DB_PORT,
+            'NAME': DB_NAME,
+            'USER': DB_USER,
+            'PASSWORD': DB_PASSWORD,
+        }
+    }
 
 
 # Password validation

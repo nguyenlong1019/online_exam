@@ -16,3 +16,4 @@ whitenoise==6.8.2
 onnxruntime==1.15.1 
 django-ckeditor==6.7.1
 django-tinymce==4.1.0
+python-decouple==3.8
