@@ -93,3 +93,12 @@ ul {
         font-size: 12px; /* Even smaller font size */
     }
 }
+
+.icon {
+    display: inline-block;
+    margin-right: 8px;
+    padding: 2px;
+    width: 36px;
+    height: 36px;
+    color: rgb(53, 72, 26);
+}

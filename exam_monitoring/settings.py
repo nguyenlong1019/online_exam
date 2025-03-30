@@ -52,7 +52,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'quiz',
-    'nested_admin',
+    # 'nested_admin',
 ]
 
 MIDDLEWARE = [
@@ -97,16 +97,16 @@ DATABASES = {
 }
 
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'HOST': 'caboose.proxy.rlwy.net',
-        'PORT': '35660',
-        'NAME': 'railway',
-        'USER': 'postgres',
-        'PASSWORD': 'TOBTCKDeSjizIrarhlNPNrVmkkulDTsD',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'HOST': 'caboose.proxy.rlwy.net',
+#         'PORT': '35660',
+#         'NAME': 'railway',
+#         'USER': 'postgres',
+#         'PASSWORD': 'TOBTCKDeSjizIrarhlNPNrVmkkulDTsD',
+#     }
+# }
 
 
 # Password validation
@@ -213,7 +213,7 @@ CKEDITOR_CONFIGS = {
         'linkShowAdvancedTab': False,
 
         # CKEditor height and width settings
-        'height': '250px',
+        'height': '200px',
         'width': 'auto',
         'forcePasteAsPlainText ': True,
 
@@ -253,7 +253,7 @@ JAZZMIN_SETTINGS = {
     'search_model': [],
     'topmenu_links': [
         # {'name': 'Admin Report', 'url': 'statistic-admin', 'new_window': True, 'permissions': ['auth.change_user']},
-        # {'name': 'Home', 'url': 'index', 'new_window': True}
+        {'name': 'Home', 'url': 'index', 'new_window': True}
     ],
     'usermenu_links': [
         # {'name': "Home", "url": "index", "new_window": True,},
@@ -270,7 +270,12 @@ JAZZMIN_SETTINGS = {
         "quiz.StudentProfile",
         "quiz.Classroom",
         "quiz.Subject",
+        "quiz.Result",
+        "quiz.Monitor",
         "quiz.Exam",
+        "quiz.Question",
+        "quiz.QuestionTrueFalse",
+        "quiz.QuestionFill",
     ], # sắp xếp các app, model theo thứ tự muốn 
     'custom_links': {
         # "books": [{
@@ -291,7 +296,12 @@ JAZZMIN_SETTINGS = {
         "quiz.StudentProfile": "fas fa-user-graduate",
         "quiz.Classroom": "fas fa-chalkboard-teacher",
         "quiz.Subject": "fas fa-book",
+        "quiz.Result": "fas fa-poll-h",
+        "quiz.Monitor": "fas fa-video",
         "quiz.Exam": "fas fa-file-alt",
+        "quiz.Question": "fas fa-question-circle",
+        "quiz.QuestionTrueFalse": "fas fa-check-circle",
+        "quiz.QuestionFill": "fas fa-file-signature"
     },
     # Icons that are used when one is not manually specified
     "default_icon_parents": "fas fa-chevron-circle-right", # default icon cho parent (app)

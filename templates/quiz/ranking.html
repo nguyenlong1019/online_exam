@@ -1,0 +1,190 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Lịch sử thi {% endblock title %}
+
+{% block content %}
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #C68EFD;
+    }
+
+
+  </style>
+
+<nav class="navbar navbar-expand-lg bg-dark border-bottom border-body" data-bs-theme="dark">
+    <div class="container">
+      <!-- <a class="navbar-brand" href="/">Cuongcon</a> -->
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">Trang chủ</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="#">Ranking</a>
+          </li>
+          {% if request.user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'result-list' %}">Kết quả thi</a>
+          </li>
+          {% endif %}
+          {% if request.user.is_superuser %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'monitor' %}">Giám sát</a>
+          </li>
+          {% endif %}
+          {% if request.user.is_authenticated and request.user.is_staff %}
+          <li class="nav-item">
+            <a class="nav-link" target="_blank" href="/admin">Dashboard</a>
+          </li>
+          {% endif %}
+        </ul>
+        {% if request.user.is_authenticated %}
+          <span class="text-white" style="margin-right: 8px;">{{request.user.username}}</span>
+          <a href="{% url 'logout' %}" class="btn btn-outline-success">Đăng xuất</a>
+        {% else %}
+          <a class="btn btn-outline-success" href="{% url 'login' %}">Đăng nhập</a>
+        {% endif %}
+      </div>
+    </div>
+</nav>
+
+
+<div class="container p-3 mb-5">
+    <h3 class="title text-dark fw-bold mb-3 text-center">Top Ranking</h3>
+    <div style="display: flex;align-items: center;justify-content: center;">
+      <div class="leaderboard">
+        <div class="header">
+          <div class="icon">🏆</div>
+          <div class="title">
+            <h2>EXAM</h2>
+            <p>LEADERBOARD</p>
+          </div>
+        </div>
+        {% for result in results %}
+        <div class="item {% if forloop.counter == 1 %}top-1{% elif forloop.counter == 2 %}top-2{% elif forloop.counter == 3 %}top-3{% endif %}">
+          <img src="{% if result.user and result.user.studentprofile and request.user.studentprofile.avt %} {{request.user.studentprofile.avt.url}} {% else %} {% static 'assets/images/image-gallery.png' %} {% endif %}" alt="Avatar">
+          <span class="name">{% if result.user and result.user.studentprofile and result.user.studentprofile.fullname %} {{result.user.studentprofile.fullname}} {% else %} {{result.user.username}} {% endif %}</span>
+          <span class="name">{% if result.user and result.user.studentprofile and request.user.studentprofile.classroom %} {{request.user.studentprofile.classroom.name}} {% endif %}</span>
+          <span class="name">{{result.exam_time}}<b>s</b></span>
+          <span class="score">{{result.score}}<b>Score</b></span>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+</div>
+
+<style>
+    .leaderboard {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    width: 600px;
+    overflow: hidden;
+  }
+
+  .header {
+    background: linear-gradient(to right, #4f75f2, #3f63d4);
+    color: white;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+  }
+
+  .header .icon {
+    font-size: 24px;
+    margin-right: 12px;
+  }
+
+  .header .title h2 {
+    margin: 0;
+    font-size: 18px;
+    letter-spacing: 1px;
+  }
+
+  .header .title p {
+    margin: 0;
+    font-size: 12px;
+    opacity: 0.8;
+  }
+
+  .item {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    border-top: 1px solid #f0f0f0;
+  }
+
+  .item img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 12px;
+  }
+
+  .name {
+    flex-grow: 1;
+    font-size: 14px;
+    color: #555;
+  }
+
+  .score {
+    font-weight: bold;
+    font-size: 16px;
+    color: #2ecc71;
+  }
+
+  .score b {
+    font-size: 12px;
+    margin-left: 2px;
+  }
+
+  /* Top 1 */
+.item.top-1 {
+  background: linear-gradient(to right, #ffe259, #ffa751);
+  font-weight: bold;
+  position: relative;
+}
+.item.top-1::before {
+  content: "🥇";
+  font-size: 22px;
+  margin-right: 10px;
+}
+
+/* Top 2 */
+.item.top-2 {
+  background: linear-gradient(to right, #d7dde8, #a2a8b2);
+  font-weight: bold;
+  position: relative;
+}
+.item.top-2::before {
+  content: "🥈";
+  font-size: 22px;
+  margin-right: 10px;
+}
+
+/* Top 3 */
+.item.top-3 {
+  background: linear-gradient(to right, #ffd194, #bc8f55);
+  font-weight: bold;
+  position: relative;
+}
+.item.top-3::before {
+  content: "🥉";
+  font-size: 22px;
+  margin-right: 10px;
+}
+
+.item.top-1 .score,
+.item.top-2 .score,
+.item.top-3 .score {
+    color: #fff;
+}
+</style>
+
+{% endblock content %}

@@ -8,7 +8,9 @@
             Trang giám sát video các bài thi
         </h2>
         <div class="text-center mt-4 mb-3">
-            <a href="{% url 'index' %}" class="btn-custom">Trang chủ</a>
+            <a href="{% url 'index' %}" class="btn btn-primary">Trang chủ</a>
+            <a href="/admin" class="btn btn-dark">Dashboard</a>
+            <a href="#" class="btn btn-danger">Ranking</a>
         </div>
         <div class="row">
             {% for exam in exams %}

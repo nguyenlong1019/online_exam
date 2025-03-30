@@ -3,135 +3,164 @@
 {% block title %} Kết quả {% endblock title %}
 
 {% block content %}
-<div class="container py-4">
-    <h2 class="text-center text-dark fw-bold mb-4">Exam Result</h2>
-    <div class="mb-4">
-        <p><strong>Exam:</strong> {{ result.exam.title }}</p>
-        <p><strong>User:</strong> {{ request.user.username }}</p>
-        <p><strong>Score:</strong> {{ result.score }}</p>
-        <p><strong>Trạng thái kiểm tra:</strong> 
-            <span id="status-check" class="fw-bold text-muted">Đang kiểm tra...</span>
-        </p>
-        <p><strong>Trạng thái gian lận:</strong> 
-            <span id="cheating-status" class="fw-bold text-muted" style="display: none;">N/A</span>
-        </p>
-        <p id="cheating-reason" class="text-danger" style="display: none;"></p>
-    </div>
+<div class="container-fluid" style="background-color: #E9A5F1;">
+    <div class="container py-4" >
+        <h2 class="text-center text-dark fw-bold mb-4">Kết quả thi <i class="icon fas fa-poll"></i></h2>
+        <div class="result-card">
+            <h3>Thông tin kết quả bài thi</h3>
+        
+            <div class="result-item">
+                <strong>Bài thi:</strong> {{ result.exam.title }}
+            </div>
+        
+            <div class="result-item">
+                <strong>User:</strong> {% if request.user.studentprofile %} {{request.user.studentprofile.fullname}} {% else %} {{request.user.username}} {% endif %}
+            </div>
+        
+            <div class="result-item">
+                <strong>Điểm:</strong> <span class="highlight">{{ result.score }}</span>
+            </div>
+        
+            <div class="result-item">
+                <strong>Thời gian thực hiện:</strong> {{ result.exam_time }} Giây
+            </div>
+        
+            <div class="result-item">
+                <strong>Trạng thái kiểm tra:</strong>
+                <span id="status-check" class="checking">Đang kiểm tra...</span>
+            </div>
+        
+            <div class="result-item">
+                <strong>Trạng thái gian lận:</strong>
+                <span id="cheating-status" class="fw-bold checking" style="display: none;">N/A</span>
+            </div>
+        
+            <p id="cheating-reason" class="danger-text" style="display: none;"></p>
+        </div>
+        
+        <h3 class="text-center text-dark fw-bold mb-3 mt-5">Chi tiết bài làm</h3>
 
-    <!-- Phần câu hỏi trắc nghiệm -->
-    <h3 class="text-primary">Phần I. Câu hỏi trắc nghiệm (4 đáp án)</h3>
-    <ul class="list-unstyled">
-        {% for detail in result.resultdetail_set.all %}
-            <li class="card mb-4 shadow-sm border-0">
-                <div class="card-body">
-                    <p class="card-title"><strong>Question:</strong> {{ detail.question.question_text|safe }}</p>
-                    <ul class="list-unstyled">
-                        {% for answer in detail.question.answer_set.all %}
+        <!-- Phần câu hỏi trắc nghiệm -->
+        <h3 class="text-primary mb-3">Phần I. Câu hỏi trắc nghiệm (4 đáp án)</h3>
+        <ul class="list-unstyled">
+            {% for detail in result_details %}
+                <li class="card mb-4 shadow-sm border-0">
+                    <div class="card-body">
+                        <p class="card-title"><strong>Question:</strong> {{ detail.question.text|safe }}</p>
+                        <ul class="list-unstyled">
+                            
                             <li class="p-2 mb-2 rounded
-                                {% if answer == detail.answer and detail.is_correct %} bg-warning
-                                {% elif answer == detail.answer and not detail.is_correct %} bg-danger text-white
+                                {% if detail.is_correct %} bg-warning
+                                {% elif not detail.is_correct %} bg-danger text-white
                                 {% endif %}">
-                                {{ answer.answer_text|safe }}
-                                {% if answer == detail.answer %}
+                                {{ detail.question.answer1|safe }}
+                                {% if detail.answer == 1 %}
                                     - <span class="fw-bold">Your Choice</span>
                                 {% endif %}
                             </li>
-                        {% endfor %}
-                    </ul>
-                    <p><strong>Correct Answer:</strong> 
-                        {% for answer in detail.question.answer_set.all %}
-                            {% if answer.is_correct %}<span class="text-success">{{ answer.answer_text|safe }}</span>{% endif %}
-                        {% endfor %}
-                    </p>
-                </div>
-            </li>
-        {% endfor %}
-    </ul>
-
-    <!-- Phần câu hỏi đúng sai -->
-    <!-- <h3 class="text-primary">Phần II. Câu hỏi đúng sai (2 đáp án)</h3>
-    <ul class="list-unstyled">
-        {% for detail in true_false_details %}
-            <li class="card mb-4 shadow-sm border-0">
-                <div class="card-body">
-                    <p class="card-title"><strong>Question:</strong> {{ detail.question.question_text }}</p>
-                    <p class="{% if detail.answer == detail.question.answer and detail.is_correct %} text-success {% else %} text-danger {% endif %}">
-                        <strong>Your Answer:</strong> 
-                        {% if detail.answer %} 
-                            {{ detail.answer|title }} 
-                        {% else %} 
-                            <span class="text-muted">No answer provided</span>
-                        {% endif %}
-                    </p>
-                    <p><strong>Correct Answer:</strong> 
-                        <span class="text-success">{{ detail.question.answer|title }}</span>
-                    </p>
-                </div>
-            </li>
-        {% endfor %}
-    </ul> -->
-
-
-    <!-- Phần câu hỏi đúng sai -->
-    <h3 class="text-primary">Phần II. Câu hỏi đúng sai (2 đáp án)</h3>
-    <ul class="list-unstyled">
-        {% for detail in true_false_details %}
-            <li class="card mb-4 shadow-sm border-0">
-                <div class="card-body">
-                    <p class="card-title"><strong>Question:</strong> {{ detail.question.question_text|safe }}</p>
-
-                    <!-- Lặp qua từng mệnh đề trong câu hỏi đúng sai -->
-                    <ul class="list-unstyled">
-                        {% for answer in detail.question.answertruefalse_set.all %}
-                            <li class="d-flex align-items-center mb-2">
-                                <p class="me-3"><strong>Clause:</strong> {{ answer.clause|safe }}</p>
-                                
-                                <!-- Hiển thị đáp án của người dùng -->
-                                <p class="me-3 {% if detail.answer == answer.answer and detail.is_correct %} text-success {% else %} text-danger {% endif %}">
-                                    <strong>Your Answer:</strong> 
-                                    {% if detail.answer == answer.answer %}
-                                        {{ detail.answer|title }}
-                                    {% else %}
-                                        <span class="text-muted">No answer provided</span>
-                                    {% endif %}
-                                </p>
-                                
-                                <!-- Hiển thị đáp án đúng -->
-                                <p><strong>Correct Answer:</strong> <span class="text-success">{{ answer.answer|title }}</span></p>
+    
+                            <li class="p-2 mb-2 rounded
+                                {% if detail.is_correct %} bg-warning
+                                {% elif not detail.is_correct %} bg-danger text-white
+                                {% endif %}">
+                                {{ detail.question.answer2|safe }}
+                                {% if detail.answer == 2 %}
+                                    - <span class="fw-bold">Your Choice</span>
+                                {% endif %}
                             </li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            </li>
-        {% endfor %}
-    </ul>
-
-
-    <!-- Phần câu hỏi điền đáp án -->
-    <h3 class="text-primary">Phần III. Câu hỏi điền đáp án</h3>
-    <ul class="list-unstyled">
-        {% for detail in fill_details %}
-            <li class="card mb-4 shadow-sm border-0">
-                <div class="card-body">
-                    <p class="card-title"><strong>Question:</strong> {{ detail.question.question_text|safe }}</p>
-                    <p class="{% if detail.answer == detail.question.answer and detail.is_correct %} text-success {% else %} text-danger {% endif %}">
-                        <strong>Your Answer:</strong> 
-                        {% if detail.answer %} 
-                            {{ detail.answer }} 
-                        {% else %} 
-                            <span class="text-muted">No answer provided</span>
-                        {% endif %}
-                    </p>
-                    <p><strong>Correct Answer:</strong> 
-                        <span class="text-success">{{ detail.question.answer|safe }}</span>
-                    </p>
-                </div>
-            </li>
-        {% endfor %}
-    </ul>
-
-    <div class="text-center">
-        <a class="btn btn-primary mb-3" href="{% url 'index' %}">Back to Exams</a>
+    
+                            <li class="p-2 mb-2 rounded
+                                {% if detail.is_correct %} bg-warning
+                                {% elif not detail.is_correct %} bg-danger text-white
+                                {% endif %}">
+                                {{ detail.question.answer3|safe }}
+                                {% if detail.answer == 3 %}
+                                    - <span class="fw-bold">Your Choice</span>
+                                {% endif %}
+                            </li>
+    
+                            <li class="p-2 mb-2 rounded
+                                {% if detail.is_correct %} bg-warning
+                                {% elif not detail.is_correct %} bg-danger text-white
+                                {% endif %}">
+                                {{ detail.question.answer4|safe }}
+                                {% if detail.answer == 4 %}
+                                    - <span class="fw-bold">Your Choice</span>
+                                {% endif %}
+                            </li>
+                            
+                        </ul>
+                        <p><strong>Correct Answer:</strong> 
+                            <span class="text-success">{{ detail.correct_answer|safe }}</span>
+                        </p>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    
+        <!-- Phần câu hỏi đúng sai -->
+        <h3 class="text-primary mb-3">Phần II. Câu hỏi đúng sai (2 đáp án)</h3>
+        <ul class="list-unstyled">
+            {% for detail in tf_data %}
+                <li class="card mb-4 shadow-sm border-0">
+                    <div class="card-body">
+                        <p class="card-title"><strong>Question:</strong> {{ detail.q_text|safe }}</p>
+    
+                        <!-- Lặp qua từng mệnh đề trong câu hỏi đúng sai -->
+                        <ul class="list-unstyled">
+                            {% for answer in detail.q_clause_list %}
+                                <li class="d-flex align-items-center mb-2">
+                                    <p class="me-3"><strong>Clause:</strong> {{ answer.rd_clause|safe }}</p>
+                                    
+                                    <!-- Hiển thị đáp án của người dùng -->
+                                    <p class="me-3 {% if detail.answer == answer.answer and detail.is_correct %} text-success {% else %} text-danger {% endif %}">
+                                        <strong>Your Answer:</strong> 
+                                        {% if not answer.rd_answer %}
+                                            <span class="text-muted">No answer provided</span>
+                                        {% else %}
+                                            {{ answer.rd_answer|title }}
+                                        {% endif %}
+                                    </p>
+                                    
+                                    <!-- Hiển thị đáp án đúng -->
+                                    <p><strong>Correct Answer:</strong> <span class="text-success">{{ answer.rd_correct_answer|title }}</span></p>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    
+    
+        <!-- Phần câu hỏi điền đáp án -->
+        <h3 class="text-primary mb-3">Phần III. Câu hỏi điền đáp án</h3>
+        <ul class="list-unstyled">
+            {% for detail in fill_details %}
+                <li class="card mb-4 shadow-sm border-0">
+                    <div class="card-body">
+                        <p class="card-title"><strong>Question:</strong> {{ detail.question.text|safe }}</p>
+                        <p class="{% if detail.answer == detail.question.answer and detail.is_correct %} text-success {% else %} text-danger {% endif %}">
+                            <strong>Your Answer:</strong> 
+                            {% if detail.answer %} 
+                                {{ detail.answer }} 
+                            {% else %} 
+                                <span class="text-muted">No answer provided</span>
+                            {% endif %}
+                        </p>
+                        <p><strong>Correct Answer:</strong> 
+                            <span class="text-success">{{ detail.question.answer|safe }}</span>
+                        </p>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    
+        <div class="text-center">
+            <a class="btn btn-primary mb-3" href="{% url 'index' %}">Back to Exams</a>
+            <a class="btn btn-dark mb-3" href="/admin">Dashboard</a>
+            <a class="btn btn-danger mb-3" href="#">Ranking</a>
+        </div>
     </div>
 </div>
 
@@ -228,6 +257,56 @@
         margin-top: 20px;
         color: #0d6efd !important;
         /* text-decoration: underline; */
+    }
+
+    p {
+        font-size: 18px;
+        margin-bottom: 10px;
+    }
+    p strong {
+        font-size: 18px;
+    }
+
+    .result-card {
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        padding: 24px;
+        max-width: 500px;
+        margin: 20px auto;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .result-card h3 {
+        font-size: 1.4rem;
+        margin-bottom: 1rem;
+        color: #333;
+    }
+
+    .result-item {
+        margin-bottom: 12px;
+        font-size: 1rem;
+    }
+
+    .result-item strong {
+        color: #555;
+        display: inline-block;
+        width: 160px;
+    }
+
+    .highlight {
+        font-weight: bold;
+        color: #198754; /* Bootstrap success green */
+    }
+
+    .checking {
+        color: #6c757d;
+        font-style: italic;
+    }
+
+    .danger-text {
+        color: #dc3545;
+        margin-top: 6px;
     }
 </style>
 {% endblock content %}

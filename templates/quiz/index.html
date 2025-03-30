@@ -16,11 +16,21 @@
             <a class="nav-link active" aria-current="page" href="/">Trang chủ</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Giới thiệu</a>
+            <a class="nav-link" href="{% url 'ranking-list' %}">Ranking</a>
           </li>
+          {% if request.user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'result-list' %}">Kết quả thi</a>
+          </li>
+          {% endif %}
           {% if request.user.is_superuser %}
           <li class="nav-item">
             <a class="nav-link" href="{% url 'monitor' %}">Giám sát</a>
+          </li>
+          {% endif %}
+          {% if request.user.is_authenticated and request.user.is_staff %}
+          <li class="nav-item">
+            <a class="nav-link" target="_blank" href="/admin">Dashboard</a>
           </li>
           {% endif %}
         </ul>
@@ -35,20 +45,21 @@
 </nav>
 
 <div class="container p-3">
+  <h3 class="title text-white fw-bold mb-3">Danh sách bài kiểm tra</h3>
   <div class="row">
     {% for exam in exams %}
       <div class="col-12 col-sm-6 col-lg-4 mb-3">
         <a class="card nav-link h-100" href="{% url 'exam' exam.id %}">
           <div class="row g-0">
             <div class="col-4">
-              <img src="{% static 'assets/images/laboratory.png' %}" class="img-fluid rounded-start" alt="{{exam.title}}">
+              <img src="{% if exam.thumb %} {{exam.thumb.url}} {% else %} {% static 'assets/images/laboratory.png' %} {% endif %}" style="padding: 6px;" class="img-fluid rounded-start" alt="{{exam.title}}">
             </div>
             <div class="col-8">
               <div class="card-body">
                 <h5 style="color: #0D92F4;" class="card-title">{{exam.title}}</h5>
                 <p class="card-text">{{exam.title}} (có đáp án)</p>
                 <p class="card-text" style="color: #F95454;">Thời gian thi: {{exam.time_todo}} phút</p>
-                <p class="card-text">Số lượt thi: {{exam.retry}}</p>
+                <p class="card-text">Số lượt thi: {{exam.retry}} <t class="icon fas fa-hourglass-start"></t></p>
                 <p class="card-text">Người tạo: {{exam.created_by}}</p>
                 <p class="card-text"><small class="text-body-secondary">Ngày tạo: {{exam.created_at|date:"d/m/Y"}}</small></p>
               </div>
@@ -57,6 +68,49 @@
         </a>
       </div>
     {% endfor %}
+  </div>
+</div>
+
+<div class="container p-3 mb-5">
+  <h3 class="title text-dark fw-bold mb-3 text-center">Take the Exam and Climb the Leaderboard</h3>
+  <div style="display: flex;align-items: center;justify-content: center;">
+    <div class="leaderboard">
+      <div class="header">
+        <div class="icon">🏆</div>
+        <div class="title">
+          <h2>EXAM</h2>
+          <p>LEADERBOARD</p>
+        </div>
+      </div>
+      <div class="item top-1">
+        <img src="https://i.pravatar.cc/40?img=1" alt="Mark">
+        <span class="name">Mark Zuckerberg</span>
+        <span class="name">Lớp 10A1</span>
+        <span class="name">31 s</span>
+        <span class="score">35.7<b>Score</b></span>
+      </div>
+      <div class="item top-2">
+        <img src="https://i.pravatar.cc/40?img=2" alt="Dustin">
+        <span class="name">Dustin Moskovitz</span>
+        <span class="name">Lớp 11A1</span>
+        <span class="name">38 s</span>
+        <span class="score">9.9<b>Score</b></span>
+      </div>
+      <div class="item top-3">
+        <img src="https://i.pravatar.cc/40?img=3" alt="Elizabeth">
+        <span class="name">Elizabeth Holmes</span>
+        <span class="name">Lớp 12A1</span>
+        <span class="name">45 s</span>
+        <span class="score">4.5<b>Score</b></span>
+      </div>
+      <div class="item">
+        <img src="https://i.pravatar.cc/40?img=4" alt="Evan">
+        <span class="name">Evan Spiegel</span>
+        <span class="name">Lớp 10A3</span>
+        <span class="name">100 s</span>
+        <span class="score">2.1<b>Score</b></span>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -116,6 +170,112 @@
     }
   }
 
+  .leaderboard {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    width: 600px;
+    overflow: hidden;
+  }
+
+  .header {
+    background: linear-gradient(to right, #4f75f2, #3f63d4);
+    color: white;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+  }
+
+  .header .icon {
+    font-size: 24px;
+    margin-right: 12px;
+  }
+
+  .header .title h2 {
+    margin: 0;
+    font-size: 18px;
+    letter-spacing: 1px;
+  }
+
+  .header .title p {
+    margin: 0;
+    font-size: 12px;
+    opacity: 0.8;
+  }
+
+  .item {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    border-top: 1px solid #f0f0f0;
+  }
+
+  .item img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 12px;
+  }
+
+  .name {
+    flex-grow: 1;
+    font-size: 14px;
+    color: #555;
+  }
+
+  .score {
+    font-weight: bold;
+    font-size: 16px;
+    color: #2ecc71;
+  }
+
+  .score b {
+    font-size: 12px;
+    margin-left: 2px;
+  }
+
+  .item.top-1 {
+  background: linear-gradient(to right, #ffe259, #ffa751);
+  font-weight: bold;
+  position: relative;
+}
+.item.top-1::before {
+  content: "🥇";
+  font-size: 22px;
+  margin-right: 10px;
+}
+
+/* Top 2 */
+.item.top-2 {
+  background: linear-gradient(to right, #d7dde8, #a2a8b2);
+  font-weight: bold;
+  position: relative;
+}
+.item.top-2::before {
+  content: "🥈";
+  font-size: 22px;
+  margin-right: 10px;
+}
+
+/* Top 3 */
+.item.top-3 {
+  background: linear-gradient(to right, #ffd194, #bc8f55);
+  font-weight: bold;
+  position: relative;
+}
+.item.top-3::before {
+  content: "🥉";
+  font-size: 22px;
+  margin-right: 10px;
+}
+
+.item.top-1 .score,
+.item.top-2 .score,
+.item.top-3 .score {
+    color: #fff;
+}
 </style>
 
 {% endblock content %}

@@ -9,39 +9,55 @@
         <input type="hidden" name="exam_id" id="exam_id" value="{{exam.id}}">
         <h2 style="color: #0D92F4;font-size: 28px;box-shadow: 0 10px 15px 6px rgba(0, 0, 0, 0.1);background-color: #54da5f;padding: 12px 24px;border-radius: 4px;"><span><i style="font-size: 20px;color: #fff;margin-right: 12px;" class="fa-solid fa-list-check"></i></span> {{ exam.title }}</h2>
         <p>Số lượng câu hỏi: {{counter}} <span><i style="font-size: 20px;color: #0e4f7e;margin-left: 12px;" class="fa-regular fa-circle-question"></i></span></p>
-        <p style="display: flex;align-items: center;justify-content: space-between;"><span style="color: #222;font-weight: 700;font-size: 18px;">Player: {{request.user.username}}</span></p>
+        <p style="display: flex;align-items: center;justify-content: space-between;"><span style="color: #222;font-weight: 700;font-size: 18px;">Player: {% if request.user.studentprofile %} {{request.user.studentprofile.fullname}} {% else %} {{request.user.username}} {% endif %}</span></p>
         <p style="display: flex;align-items: center;justify-content: space-between;"><span id="countdown" style="display: block;font-size: 18px;font-weight: 700;color: #C62E2E;">15:00</span></p>
         <form method="post" action="{% url 'exam' exam.id %}">
             {% csrf_token %}
             <div class="slider">
-                {% for question in exam.question_set.all %}
+                {% for question in part1_questions %}
                     <div class="slide">
                         <h3 style="font-size: 20px;margin-top: 12px;color: #0D92F4;" class="mb-3">Phần I. Câu hỏi trắc nghiệm (4 đáp án)</h3>
 
                         <p style="color: #FF6B6B; font-size: 18px; font-weight: bold; background-color: #FFF3E0; padding: 12px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-                            <span><i style="color: #0D92F4;font-size: 20px;margin-right: 12px;" class="fa-regular fa-circle-question"></i></span> Câu hỏi: {{ question.question_text|safe }}
+                            <span><i style="color: #0D92F4;font-size: 20px;margin-right: 12px;" class="fa-regular fa-circle-question"></i></span> Câu hỏi {{forloop.counter}}: {{ question.text|safe }}
                         </p>
                         
-
                         <input type="hidden" name="question_{{ question.id }}" value="">
-                        {% for answer in question.answer_set.all %}
-                            <div class="form-check mb-3" style="box-shadow: 0 10px 15px 6px rgba(0, 0, 0, 0.1);padding: 12px 12px 12px 40px;border-radius: 4px;cursor: pointer;background-color: #fff;">
-                                <input class="form-check-input" type="radio" name="question_{{ question.id }}" value="{{ answer.id }}">
-                                <label class="form-check-label">
-                                    {{ answer.answer_text|safe }}
-                                </label>
-                            </div>
-                        {% endfor %}
+                        <div class="form-check mb-3" style="box-shadow: 0 10px 15px 6px rgba(0, 0, 0, 0.1);padding: 12px 12px 12px 40px;border-radius: 4px;cursor: pointer;background-color: #fff;">
+                            <input id="answer_1_{{question.id}}" class="form-check-input" type="radio" name="question_{{ question.id }}" value="1">
+                            <label for="answer_1_{{question.id}}" class="form-check-label">
+                                {{ question.answer1|safe }}
+                            </label>
+                        </div>
+                        <div class="form-check mb-3" style="box-shadow: 0 10px 15px 6px rgba(0, 0, 0, 0.1);padding: 12px 12px 12px 40px;border-radius: 4px;cursor: pointer;background-color: #fff;">
+                            <input id="answer_2_{{question.id}}" class="form-check-input" type="radio" name="question_{{ question.id }}" value="2">
+                            <label for="answer_2_{{question.id}}" class="form-check-label">
+                                {{ question.answer2|safe }}
+                            </label>
+                        </div>
+                        <div class="form-check mb-3" style="box-shadow: 0 10px 15px 6px rgba(0, 0, 0, 0.1);padding: 12px 12px 12px 40px;border-radius: 4px;cursor: pointer;background-color: #fff;">
+                            <input id="answer_3_{{question.id}}" class="form-check-input" type="radio" name="question_{{ question.id }}" value="3">
+                            <label for="answer_3_{{question.id}}" class="form-check-label">
+                                {{ question.answer3|safe }}
+                            </label>
+                        </div>
+                        <div class="form-check mb-3" style="box-shadow: 0 10px 15px 6px rgba(0, 0, 0, 0.1);padding: 12px 12px 12px 40px;border-radius: 4px;cursor: pointer;background-color: #fff;">
+                            <input id="answer_4_{{question.id}}" class="form-check-input" type="radio" name="question_{{ question.id }}" value="4">
+                            <label for="answer_4_{{question.id}}" class="form-check-label">
+                                {{ question.answer4|safe }}
+                            </label>
+                        </div>
+                            
                     </div>
                 {% endfor %}
 
                 
-                {% for question in exam.questiontruefalse_set.all %}
+                {% for question in part2_questions %}
                     <div class="slide">
                         <!-- Phần câu hỏi đúng sai -->
                         <h3 style="color: #0D92F4;font-size: 20px;margin-top: 12px;" class="mb-3">Phần II. Câu hỏi đúng sai</h3>
                         <p style="color: #FF6B6B; font-size: 18px; font-weight: bold; background-color: #FFF3E0; padding: 12px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-                            <span><i style="color: #0D92F4;font-size: 20px;margin-right: 12px;" class="fa-regular fa-circle-question"></i></span> Câu hỏi: {{ question.question_text }}
+                            <span><i style="color: #0D92F4;font-size: 20px;margin-right: 12px;" class="fa-regular fa-circle-question"></i></span> Câu hỏi: {{ question.text|safe }}
                         </p>
                         {% for answer in question.answertruefalse_set.all %}
                         <div class="form-check mb-3 d-flex align-items-center justify-content-between" style="gap: 24px;box-shadow: 0 10px 15px 6px rgba(0, 0, 0, 0.1);padding: 12px 12px 12px 40px;border-radius: 4px;cursor: pointer;background-color: #fff;">
@@ -62,22 +78,22 @@
                 {% endfor %}
 
                 <!-- Câu hỏi điền đáp án -->
-                {% for question in exam.questionfill_set.all %}
+                {% for question in part3_questions %}
                     <div class="slide">
                         <h3 style="color: #0D92F4;font-size: 20px;margin-top: 12px;" class="mb-3">Phần III. Câu hỏi điền đáp án</h3>
                         
                         <p style="color: #FF6B6B; font-size: 18px; font-weight: bold; background-color: #FFF3E0; padding: 12px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-                            <span><i style="color: #0D92F4;font-size: 20px;margin-right: 12px;" class="fa-regular fa-circle-question"></i></span> Câu hỏi: {{ question.question_text|safe }}
+                            <span><i style="color: #0D92F4;font-size: 20px;margin-right: 12px;" class="fa-regular fa-circle-question"></i></span> Câu hỏi: {{ question.text|safe }}
                         </p>
-                        
-
                         <input type="hidden" name="question_fill_{{ question.id }}" value="">
                         <div class="mb-3">
                             <label class="form-label" style="color: #0D92F4;">Điền vào đáp án</label>
-                            <input class="form-control" type="text" name="question_fill_{{ question.id }}">
+                            <textarea class="form-control" rows="5" style="resize: none;" type="text" name="question_fill_{{ question.id }}"></textarea>
                         </div>
+
                     </div>
                 {% endfor %}
+                <input type="hidden" name="elapsed_time" id="elapsed_time"> 
             </div>
             
             <div class="controls">
@@ -145,7 +161,7 @@
 
     <script>
         // Countdown timer (15 minutes)
-        let timeLeft = 15 * 60; // 15 minutes in seconds
+        let timeLeft = {{exam.time_todo}} * 60; // 15 minutes in seconds
         const countdownElement = document.getElementById("countdown");
 
         const timerInterval = setInterval(() => {
@@ -209,6 +225,10 @@
         // Khi submit form thì gọi `mediaRecorder.stop()` và chờ `onstop` xử lý tải lên
         document.querySelector("form").onsubmit = async function(event) {
             event.preventDefault(); // Ngăn form submit mặc định
+
+            const elapsedSeconds = ({{exam.time_todo}} * 60) - timeLeft;
+            document.getElementById('elapsed_time').value = elapsedSeconds;
+
             mediaRecorder.stop(); // Kết thúc ghi, onstop sẽ xử lý tải lên
             setTimeout(() => {
                 this.submit(); // Submit form sau khi tải lên hoàn tất
@@ -216,8 +236,6 @@
         };
 
         startVideoRecording(); // Bắt đầu ghi khi tải trang
-
-
 
 
     </script>

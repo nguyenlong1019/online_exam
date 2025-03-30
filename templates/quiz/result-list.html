@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Lịch sử thi {% endblock title %}
+
+{% block content %}
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #C68EFD;
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .table-box {
+      display: inline-block;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      overflow-x: auto;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      min-width: 800px;
+    }
+
+    thead {
+      background-color: #f2f2f2;
+    }
+
+    th, td {
+      padding: 16px 20px;
+      border-bottom: 1px solid #eee;
+      text-align: left;
+    }
+
+    th {
+      font-weight: 600;
+      color: #333;
+    }
+
+    td {
+      color: #555;
+    }
+
+    td strong {
+      font-weight: 600;
+    }
+
+    .status {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    .status.progress {
+      background-color: #28a745;
+    }
+
+    .status.open {
+      background-color: #ffc107;
+      color: #333;
+    }
+
+    .status.hold {
+      background-color: #dc3545;
+    }
+
+    tbody tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    tbody tr:hover {
+      background-color: #f1f1f1;
+    }
+  </style>
+
+<nav class="navbar navbar-expand-lg bg-dark border-bottom border-body" data-bs-theme="dark">
+    <div class="container">
+      <!-- <a class="navbar-brand" href="/">Cuongcon</a> -->
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/">Trang chủ</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Ranking</a>
+          </li>
+          {% if request.user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link active" href="{% url 'result-list' %}">Kết quả thi</a>
+          </li>
+          {% endif %}
+          {% if request.user.is_superuser %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'monitor' %}">Giám sát</a>
+          </li>
+          {% endif %}
+          {% if request.user.is_authenticated and request.user.is_staff %}
+          <li class="nav-item">
+            <a class="nav-link" target="_blank" href="/admin">Dashboard</a>
+          </li>
+          {% endif %}
+        </ul>
+        {% if request.user.is_authenticated %}
+          <span class="text-white" style="margin-right: 8px;">{{request.user.username}}</span>
+          <a href="{% url 'logout' %}" class="btn btn-outline-success">Đăng xuất</a>
+        {% else %}
+          <a class="btn btn-outline-success" href="{% url 'login' %}">Đăng nhập</a>
+        {% endif %}
+      </div>
+    </div>
+</nav>
+
+
+  <div class="table-box mt-3">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Exam</th>
+          <th>Time</th>
+          <th>Score</th>
+          <th>Is Cheat</th>
+          <th>Detail</th>
+          <th>Ranking</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for result in results %}
+            <tr>
+                <td><strong>{{forloop.counter}}</strong></td>
+                <td>{% if request.user.studentprofile %} {{request.user.studentprofile.fullname}} {% else %} {{result.user.username}} {% endif %}</td>
+                <td>{{result.exam_time}} Giây</td>
+                <td>{{result.score}}</td>
+                <td>{% if result.is_cheat %}<span class="status hold">Cheat</span>{% else %} <span class="status open">No Cheat</span> {% endif %}</td>
+                <td>
+                    <a href="{% url 'result' result.id %}" class="btn btn-primary"><i class="fa-solid fa-clock-rotate-left"></i></a>
+                </td>
+                <td>
+                    <a href="{% url 'ranking' result.exam.id %}" class="btn btn-danger"><i class="fa-solid fa-trophy"></i></a>
+                </td>
+                <td>{{result.updated_at}}</td>
+            </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+{% endblock content %}
