@@ -18,7 +18,7 @@
           <li class="nav-item">
             <a class="nav-link" href="#">Giới thiệu</a>
           </li>
-          {% if request.user.is_superuser %}
+          {% if request.user.is_staff %}
           <li class="nav-item">
             <a class="nav-link" href="{% url 'monitor' %}">Giám sát</a>
           </li>

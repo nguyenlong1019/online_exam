@@ -9,7 +9,7 @@
         <input type="hidden" name="exam_id" id="exam_id" value="{{exam.id}}">
         <h2 style="color: #0D92F4;font-size: 28px;box-shadow: 0 10px 15px 6px rgba(0, 0, 0, 0.1);background-color: #54da5f;padding: 12px 24px;border-radius: 4px;"><span><i style="font-size: 20px;color: #fff;margin-right: 12px;" class="fa-solid fa-list-check"></i></span> {{ exam.title }}</h2>
         <p>Số lượng câu hỏi: {{counter}} <span><i style="font-size: 20px;color: #0e4f7e;margin-left: 12px;" class="fa-regular fa-circle-question"></i></span></p>
-        <p style="display: flex;align-items: center;justify-content: space-between;"><span style="color: #222;font-weight: 700;font-size: 18px;">Player: {% if request.user.studentprofile %} {{request.user.studentprofile.fullname}} {% else %} {{request.user.username}} {% endif %}</span></p>
+        <p style="display: flex;align-items: center;justify-content: space-between;"><span style="color: #222;font-weight: 700;font-size: 18px;">Người thực hiện: {% if request.user.studentprofile %} {{request.user.studentprofile.fullname}} {% else %} {{request.user.username}} {% endif %}</span></p>
         <p style="display: flex;align-items: center;justify-content: space-between;"><span id="countdown" style="display: block;font-size: 18px;font-weight: 700;color: #C62E2E;">15:00</span></p>
         <form method="post" action="{% url 'exam' exam.id %}">
             {% csrf_token %}

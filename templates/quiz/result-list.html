@@ -96,14 +96,14 @@
             <a class="nav-link" aria-current="page" href="/">Trang chủ</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Ranking</a>
+            <a class="nav-link" href="{% url 'ranking-list' %}">Bảng xếp hạng</a>
           </li>
           {% if request.user.is_authenticated %}
           <li class="nav-item">
             <a class="nav-link active" href="{% url 'result-list' %}">Kết quả thi</a>
           </li>
           {% endif %}
-          {% if request.user.is_superuser %}
+          {% if request.user.is_staff %}
           <li class="nav-item">
             <a class="nav-link" href="{% url 'monitor' %}">Giám sát</a>
           </li>
@@ -130,13 +130,13 @@
       <thead>
         <tr>
           <th>#</th>
-          <th>Exam</th>
-          <th>Time</th>
-          <th>Score</th>
-          <th>Is Cheat</th>
-          <th>Detail</th>
-          <th>Ranking</th>
-          <th>Date</th>
+          <th>Bài thi</th>
+          <th>Thời gian làm</th>
+          <th>Điểm</th>
+          <th>Gian lận</th>
+          <th>Chi tiết</th>
+          <th>BXH</th>
+          <th>Ngày</th>
         </tr>
       </thead>
       <tbody>
@@ -146,7 +146,7 @@
                 <td>{% if request.user.studentprofile %} {{request.user.studentprofile.fullname}} {% else %} {{result.user.username}} {% endif %}</td>
                 <td>{{result.exam_time}} Giây</td>
                 <td>{{result.score}}</td>
-                <td>{% if result.is_cheat %}<span class="status hold">Cheat</span>{% else %} <span class="status open">No Cheat</span> {% endif %}</td>
+                <td>{% if result.is_cheat %}<span class="status hold">Có</span>{% else %} <span class="status open">Không</span> {% endif %}</td>
                 <td>
                     <a href="{% url 'result' result.id %}" class="btn btn-primary"><i class="fa-solid fa-clock-rotate-left"></i></a>
                 </td>

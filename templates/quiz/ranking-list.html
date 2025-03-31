@@ -96,14 +96,14 @@
             <a class="nav-link" aria-current="page" href="/">Trang chủ</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Ranking</a>
+            <a class="nav-link" href="{% url 'ranking-list' %}">Bảng xếp hạng</a>
           </li>
           {% if request.user.is_authenticated %}
           <li class="nav-item">
             <a class="nav-link active" href="{% url 'result-list' %}">Kết quả thi</a>
           </li>
           {% endif %}
-          {% if request.user.is_superuser %}
+          {% if request.user.is_staff %}
           <li class="nav-item">
             <a class="nav-link" href="{% url 'monitor' %}">Giám sát</a>
           </li>
@@ -130,13 +130,13 @@
       <thead>
         <tr>
           <th>#</th>
-          <th>Exam</th>
-          <th>Questions</th>
-          <th>Time</th>
-          <th>Created By</th>
-          <th>Subject</th>
-          <th>Ranking</th>
-          <th>Date</th>
+          <th>Bài kểm tra</th>
+          <th>Số câu hỏi</th>
+          <th>Thời gian</th>
+          <th>Tạo bởi</th>
+          <th>Môn học</th>
+          <th>BXH</th>
+          <th>Ngày</th>
         </tr>
       </thead>
       <tbody>

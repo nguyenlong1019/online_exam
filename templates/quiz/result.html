@@ -46,7 +46,7 @@
             {% for detail in result_details %}
                 <li class="card mb-4 shadow-sm border-0">
                     <div class="card-body">
-                        <p class="card-title"><strong>Question:</strong> {{ detail.question.text|safe }}</p>
+                        <p class="card-title"><strong>Câu hỏi:</strong> {{ detail.question.text|safe }}</p>
                         <ul class="list-unstyled">
                             
                             <li class="p-2 mb-2 rounded
@@ -55,7 +55,7 @@
                                 {% endif %}">
                                 {{ detail.question.answer1|safe }}
                                 {% if detail.answer == 1 %}
-                                    - <span class="fw-bold">Your Choice</span>
+                                    - <span class="fw-bold">Đáp án chọn</span>
                                 {% endif %}
                             </li>
     
@@ -65,7 +65,7 @@
                                 {% endif %}">
                                 {{ detail.question.answer2|safe }}
                                 {% if detail.answer == 2 %}
-                                    - <span class="fw-bold">Your Choice</span>
+                                    - <span class="fw-bold">Đáp án chọn</span>
                                 {% endif %}
                             </li>
     
@@ -75,7 +75,7 @@
                                 {% endif %}">
                                 {{ detail.question.answer3|safe }}
                                 {% if detail.answer == 3 %}
-                                    - <span class="fw-bold">Your Choice</span>
+                                    - <span class="fw-bold">Đáp án chọn</span>
                                 {% endif %}
                             </li>
     
@@ -85,7 +85,7 @@
                                 {% endif %}">
                                 {{ detail.question.answer4|safe }}
                                 {% if detail.answer == 4 %}
-                                    - <span class="fw-bold">Your Choice</span>
+                                    - <span class="fw-bold">Đáp án chọn</span>
                                 {% endif %}
                             </li>
                             
@@ -104,26 +104,26 @@
             {% for detail in tf_data %}
                 <li class="card mb-4 shadow-sm border-0">
                     <div class="card-body">
-                        <p class="card-title"><strong>Question:</strong> {{ detail.q_text|safe }}</p>
+                        <p class="card-title"><strong>Câu hỏi:</strong> {{ detail.q_text|safe }}</p>
     
                         <!-- Lặp qua từng mệnh đề trong câu hỏi đúng sai -->
                         <ul class="list-unstyled">
                             {% for answer in detail.q_clause_list %}
                                 <li class="d-flex align-items-center mb-2">
-                                    <p class="me-3"><strong>Clause:</strong> {{ answer.rd_clause|safe }}</p>
+                                    <p class="me-3"><strong>Mệnh đề:</strong> {{ answer.rd_clause|safe }}</p>
                                     
                                     <!-- Hiển thị đáp án của người dùng -->
                                     <p class="me-3 {% if detail.answer == answer.answer and detail.is_correct %} text-success {% else %} text-danger {% endif %}">
-                                        <strong>Your Answer:</strong> 
+                                        <strong>Đáp án chọn:</strong>
                                         {% if not answer.rd_answer %}
-                                            <span class="text-muted">No answer provided</span>
+                                            <span class="text-muted">Không chọn đáp án</span>
                                         {% else %}
                                             {{ answer.rd_answer|title }}
                                         {% endif %}
                                     </p>
                                     
                                     <!-- Hiển thị đáp án đúng -->
-                                    <p><strong>Correct Answer:</strong> <span class="text-success">{{ answer.rd_correct_answer|title }}</span></p>
+                                    <p><strong>Đáp án đúng:</strong> <span class="text-success">{{ answer.rd_correct_answer|title }}</span></p>
                                 </li>
                             {% endfor %}
                         </ul>
@@ -139,16 +139,16 @@
             {% for detail in fill_details %}
                 <li class="card mb-4 shadow-sm border-0">
                     <div class="card-body">
-                        <p class="card-title"><strong>Question:</strong> {{ detail.question.text|safe }}</p>
+                        <p class="card-title"><strong>Câu hỏi:</strong> {{ detail.question.text|safe }}</p>
                         <p class="{% if detail.answer == detail.question.answer and detail.is_correct %} text-success {% else %} text-danger {% endif %}">
-                            <strong>Your Answer:</strong> 
+                            <strong>Đáp án của bạn:</strong>
                             {% if detail.answer %} 
                                 {{ detail.answer }} 
                             {% else %} 
-                                <span class="text-muted">No answer provided</span>
+                                <span class="text-muted">Không điền đáp án</span>
                             {% endif %}
                         </p>
-                        <p><strong>Correct Answer:</strong> 
+                        <p><strong>Đáp án đúng:</strong>
                             <span class="text-success">{{ detail.question.answer|safe }}</span>
                         </p>
                     </div>
@@ -157,9 +157,9 @@
         </ul>
     
         <div class="text-center">
-            <a class="btn btn-primary mb-3" href="{% url 'index' %}">Back to Exams</a>
+            <a class="btn btn-primary mb-3" href="{% url 'index' %}">Trang chủ</a>
             <a class="btn btn-dark mb-3" href="/admin">Dashboard</a>
-            <a class="btn btn-danger mb-3" href="#">Ranking</a>
+            <a class="btn btn-danger mb-3" href="{% url 'ranking' result.exam.id %}">Bảng xếp hạng</a>
         </div>
     </div>
 </div>
