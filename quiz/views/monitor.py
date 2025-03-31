@@ -38,7 +38,7 @@ def upload_video(request, pk):
 
 
 def monitor_list_view(request):
-    if request.user.is_authenticated and request.user.has_perm('view_teacherprofile'):
+    if request.user.is_authenticated and request.user.has_perm('quiz.view_teacherprofile'):
         exams = Exam.objects.order_by('-created_at')
         return render(request, 'quiz/monitor.html', {'exams': exams}, status=200)
     else:
@@ -46,7 +46,7 @@ def monitor_list_view(request):
 
 
 def monitor_detail_view(request, pk):
-    if request.user.is_authenticated and request.user.has_perm('view_teacherprofile'):
+    if request.user.is_authenticated and request.user.has_perm('quiz.view_teacherprofile'):
         try:
             exam = Exam.objects.get(pk=pk)
         except Exam.DoesNotExist:
